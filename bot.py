@@ -1,6 +1,3 @@
-import os
-from typing import Dict, Optional
-
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application,
@@ -11,10 +8,12 @@ from telegram.ext import (
     filters,
 )
 
+import os
+from typing import Dict, Optional
+
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 OWNER_TG_ID = os.getenv("OWNER_TG_ID", "").strip()
 DOCTOR_CODES_RAW = os.getenv("DOCTOR_CODES", "").strip()
-
 
 def parse_doctor_codes(raw: str) -> Dict[str, str]:
     """
@@ -23,7 +22,7 @@ def parse_doctor_codes(raw: str) -> Dict[str, str]:
     out: Dict[str, str] = {}
     if not raw:
         return out
-    parts = [p.strip() for p in raw.split(";") if p.strip()]
+    parts = [p.strip() for p in raw.split( ";" ) if p.strip()]
     for p in parts:
         if ":" not in p:
             continue
@@ -34,7 +33,6 @@ def parse_doctor_codes(raw: str) -> Dict[str, str]:
             out[code] = name
     return out
 
-
 DOCTOR_CODES = parse_doctor_codes(DOCTOR_CODES_RAW)
 
 # In-memory (will reset if Render restarts)
@@ -44,21 +42,17 @@ AUTHORIZED_DOCTORS: Dict[int, str] = {}  # user_id -> doctor_name
 WAITING_DRAFT_FOR: Dict[int, bool] = {}  # user_id -> waiting text?
 DRAFT_TEXT: Dict[int, str] = {}          # user_id -> last draft text
 
-
 def owner_only(user_id: int) -> bool:
     return OWNER_TG_ID.isdigit() and int(OWNER_TG_ID) == user_id
 
-
 def is_private(update: Update) -> bool:
     return bool(update.effective_chat and update.effective_chat.type == "private")
-
 
 def approve_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("✅ Approve", callback_data="appr")],
         [InlineKeyboardButton("❌ Cancel", callback_data="canc")],
     ])
-
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not is_private(update):
@@ -70,7 +64,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "3) пришлите текст одним сообщением → Approve\n\n"
         "Финал будет оформлен «как от бренда» с подписью врача."
     )
-
 
 async def access(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not update.message or not is_private(update):
@@ -98,7 +91,6 @@ async def access(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         f"Дальше: /draft"
     )
 
-
 async def draft(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not update.message or not is_private(update):
         return
@@ -116,7 +108,6 @@ async def draft(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "Ок. Отправьте текст рекомендаций ОДНИМ сообщением.\n"
         "После этого появится кнопка Approve."
     )
-
 
 async def addcode(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Owner helper: показывает, как добавить код в DOCTOR_CODES."""
@@ -140,7 +131,6 @@ async def addcode(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "Пример:\n"
         "AV-DR-0001:доктор Асем;AV-DR-1234:доктор Иванов"
     )
-
 
 async def on_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not update.message or not is_private(update):
@@ -169,10 +159,10 @@ async def on_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     doctor_name = AUTHORIZED_DOCTORS.get(user.id, "Доктор")
     await update.message.reply_text(
         f"Черновик готов (доктор: {doctor_name}).\n"
-        "Нажмите Approve — и я выдам финальный текст «как от бренда».",
+        "Нажмите Approve — и я выдам финальный текст «как от бренда".
+        "",
         reply_markup=approve_keyboard(),
     )
-
 
 async def on_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
@@ -213,16 +203,18 @@ async def on_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         # Отправим готовый финал отдельным сообщением (удобно копировать)
         await context.bot.send_message(chat_id=query.message.chat_id, text=final_text)
 
-        # и пометим кнопку как выполненную
+        # и пометим кнопку как выполненная
         await query.edit_message_text("Готово ✅ Финальный текст отправлен отдельным сообщением.")
         return
-
 
 def main() -> None:
     if not BOT_TOKEN:
         raise RuntimeError("Set BOT_TOKEN environment variable")
 
     app = Application.builder().token(BOT_TOKEN).build()
+
+    # Передадим список авторизованных врачей в bot_data для доступа из handler'ов
+    app.bot_data["AUTHORIZED_DOCTORS"] = AUTHORIZED_DOCTORS
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("access", access))
@@ -232,7 +224,6 @@ def main() -> None:
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, on_text))
 
     app.run_polling(allowed_updates=Update.ALL_TYPES)
-
 
 if __name__ == "__main__":
     main()
