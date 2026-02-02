@@ -58,7 +58,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not is_private(update):
         return
     await update.message.reply_text(
-        "Я бот для врачей AV FITO (работаю в личке).\n\n"
+        "Я бот для врачей AV FITO (работаю в личке).
+\n"
         "1) /access <CODE> — доступ\n"
         "2) /draft — создать черновик\n"
         "3) пришлите текст одним сообщением → Approve\n\n"
@@ -159,8 +160,7 @@ async def on_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     doctor_name = AUTHORIZED_DOCTORS.get(user.id, "Доктор")
     await update.message.reply_text(
         f"Черновик готов (доктор: {doctor_name}).\n"
-        "Нажмите Approve — и я выдам финальный текст «как от бренда".
-        "",
+        "Нажмите Approve — и я выдам финальный текст «как от бренда».",
         reply_markup=approve_keyboard(),
     )
 
