@@ -1,4 +1,4 @@
-"""from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -60,13 +60,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(
         "Я бот для врачей AV FITO (работаю в личке).
         "
-        "1) /access <CODE> — доступ
-        "
-        "2) /draft — создать черновик
-        "
-        "3) пришлите текст одним сообщением → Approve
-
-"        "
+        "1) /access <CODE> — доступ\n"
+        "2) /draft — создать черновик\n"
+        "3) пришлите текст одним сообщением → Approve\n\n"
         "Финал будет оформлен «как от бренда» с подписью врача."
     )
 
@@ -227,8 +223,7 @@ def main() -> None:
     app.add_handler(CallbackQueryHandler(on_callback))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, on_text))
 
-    app.run_polling(allowed_updates=Update.ALL_TYPES)
+    # NOTE: run_polling removed per request — main() will not start the polling loop here
 
 if __name__ == "__main__":
     main()
-"""
