@@ -1,4 +1,4 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+"""from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -59,10 +59,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         return
     await update.message.reply_text(
         "Я бот для врачей AV FITO (работаю в личке).
-\n"
-        "1) /access <CODE> — доступ\n"
-        "2) /draft — создать черновик\n"
-        "3) пришлите текст одним сообщением → Approve\n\n"
+        "
+        "1) /access <CODE> — доступ
+        "
+        "2) /draft — создать черновик
+        "
+        "3) пришлите текст одним сообщением → Approve
+
+"        "
         "Финал будет оформлен «как от бренда» с подписью врача."
     )
 
@@ -227,3 +231,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+"""
