@@ -174,7 +174,8 @@ async def on_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     doctor_name = AUTHORIZED_DOCTORS.get(user.id, "Доктор")
     await update.message.reply_text(
         f"Черновик готов (доктор: {doctor_name}).\n"
-        "Нажмите Approve — и я выдам финальный текст «как от бренда".,
+        "Нажмите Approve — и я выдам финальный текст «как от бренда.",
+
         reply_markup=approve_keyboard(),
     )
 
