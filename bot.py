@@ -58,8 +58,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not is_private(update):
         return
     await update.message.reply_text(
-        "Я бот для врачей AV FITO (работаю в личке).
-\n"
+        "Я бот для врачей AV FITO (работаю в личке).\n\n"
         "1) /access <CODE> — доступ\n"
         "2) /draft — создать черновик\n"
         "3) пришлите текст одним сообщением → Approve\n\n"
