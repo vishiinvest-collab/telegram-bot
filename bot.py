@@ -1,8 +1,9 @@
+print("BOOT1: imports ok", flush=True)
 def _strip_sensitive(text: str) -> str:
     # На всякий случай убираем любые "проценты" из текста, если вдруг врач их впишет
     # (у тебя правило: проценты ингредиентов не публиковать)
     return re.sub(r"\b\d{1,3}\s*%\b", "[%]", text)
-
+print("BOOT3: run_polling next", flush=True)
 def build_gpt_prompt(draft: str, doctor_name: str) -> str:
     draft = _strip_sensitive(draft)
 
